@@ -16,7 +16,7 @@ body.card-open{--side:var(--card-w)}
 button{font:inherit;color:inherit;cursor:pointer}
 [hidden]{display:none!important}
 .eyebrow{font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.18em;color:var(--accent);text-transform:uppercase}
-#stage{position:fixed;top:0;left:0;bottom:0;right:var(--side);transition:right .35s ease;touch-action:none;overflow:hidden}
+#stage{position:fixed;z-index:0;top:0;left:0;bottom:0;right:var(--side);transition:right .35s ease;touch-action:none;overflow:hidden}
 #stage canvas{display:block;touch-action:none}
 .labels{position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none}
 .chip{pointer-events:auto;border:0;display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 9px;border-radius:999px;background:rgba(246,242,234,.95);color:var(--ink);font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.22);transition:opacity .2s,background .2s}
@@ -169,6 +169,13 @@ body.card-open .dock-nav,body.fb-mode .dock-nav{display:none!important}
  .brand{top:10px}
 }
 @media (max-height:400px){ .hero-note,.hint-m{display:none!important} }
+
+.panpad{position:fixed;right:calc(var(--side) + 14px);bottom:70px;z-index:6;display:grid;grid-template-columns:repeat(3,30px);grid-template-rows:repeat(2,30px);gap:3px;transition:right .35s ease;-webkit-user-select:none;user-select:none}
+.panpad button{border:0;border-radius:8px;background:rgba(28,26,29,.72);color:#fff;font-size:15px;font-weight:900;padding:0;line-height:30px;width:30px;height:30px;box-shadow:var(--shadow);touch-action:none;cursor:pointer}
+.panpad button:active{background:var(--accent)}
+.panpad [data-p=u]{grid-column:2;grid-row:1}.panpad [data-p=l]{grid-column:1;grid-row:2}.panpad [data-p=d]{grid-column:2;grid-row:2}.panpad [data-p=r]{grid-column:3;grid-row:2}
+body.fb-mode .panpad{display:none}
+@media (max-width:760px){ .panpad{right:10px;bottom:60px} body.card-open .panpad{display:none} .hint-m{max-width:calc(100vw - 140px)!important} }
 </style>
 <script>
 /* 出錯時顯示訊息（ES5，不限定瀏覽器）· báo lỗi */
@@ -187,10 +194,10 @@ body.card-open .dock-nav,body.fb-mode .dock-nav{display:none!important}
 <div class="loading" id="loading">载入 3D 场景中… Đang tải…</div>
 <header class="brand"><div class="logo">VN <span>LINE.</span></div><div class="r"><h1>3D 工作站地图 · Bản đồ trạm 3D</h1><p>Victory・Decathlon 针车线 · Chuyền may</p></div></header>
 <div class="hero-note"><div class="number" id="hero-count">22<small> 站 · trạm</small></div><h2>22 个工作站（1–5 已建档，6–22 待配置）<br><small style="font-size:14px">22 trạm (1–5 đã có dữ liệu, 6–22 chưa cấu hình)</small></h2><p>点一座岛，右边会打开该站的 SOP、机台与现场照片；长按拖到其他位置，编号自动重排。<br>Nhấn vào một đảo để xem SOP, máy và ảnh hiện trường; nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại.</p></div>
-<nav class="toolbar"><a class="fs" id="fs-link" href="https://vxhugh1987.github.io/vn3-3d-map/" target="_blank" rel="noopener" title="在新分页全屏打开 / Mở toàn màn hình ở tab mới">⛶ 全屏 · Toàn màn hình</a><button id="home">全景 · Toàn cảnh</button><button id="spin" aria-pressed="false">自动旋转 · Tự xoay</button><button id="layout-export" class="lt">导出<span class="lg">布局</span> · Xuất<span class="lg"> bố cục</span></button><button id="layout-reset" class="lt">重置<span class="lg">布局</span> · Đặt lại<span class="lg"> bố cục</span></button></nav>
-<nav class="dock" id="dock" aria-label="快速前往工作站 / Đi nhanh đến trạm"></nav><button class="dock-nav" id="dock-l" aria-label="向左 / Sang trái">‹</button><button class="dock-nav" id="dock-r" aria-label="向右 / Sang phải">›</button>
-<div class="hint">拖曳旋转・滚轮或双指缩放・点岛屿看资料・长按拖到其他位置，编号自动重排（R 键旋转）<br>Kéo để xoay・Cuộn / hai ngón để thu phóng・Nhấn đảo để xem thông tin・Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại (phím R để xoay)</div>
-<div class="hint-m">长按拖到其他位置，编号自动重排<br>Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại</div>
+<nav class="toolbar"><a class="fs" id="fs-link" href="https://vxhugh1987.github.io/vn3-3d-map/" target="_blank" rel="noopener" title="在新分页全屏打开 / Mở toàn màn hình ở tab mới">⛶ 全屏 · Toàn màn hình</a><button id="home">全景 · Toàn cảnh</button><button id="panmode" aria-pressed="false" title="开启后单指／左键拖曳＝平移 · Bật: một ngón / chuột trái kéo = di chuyển">✥ 平移 · Di chuyển</button><button id="layout-export" class="lt">导出<span class="lg">布局</span> · Xuất<span class="lg"> bố cục</span></button><button id="layout-reset" class="lt">重置<span class="lg">布局</span> · Đặt lại<span class="lg"> bố cục</span></button></nav>
+<div class="panpad" id="panpad" aria-label="平移 · Di chuyển"><button data-p="u" aria-label="上 · Lên">↑</button><button data-p="l" aria-label="左 · Trái">←</button><button data-p="d" aria-label="下 · Xuống">↓</button><button data-p="r" aria-label="右 · Phải">→</button></div><nav class="dock" id="dock" aria-label="快速前往工作站 / Đi nhanh đến trạm"></nav><button class="dock-nav" id="dock-l" aria-label="向左 / Sang trái">‹</button><button class="dock-nav" id="dock-r" aria-label="向右 / Sang phải">›</button>
+<div class="hint">拖曳旋转・右键／方向键＝平移・滚轮或双指缩放・点岛屿看资料・长按拖到其他位置，编号自动重排（R 键旋转）<br>Kéo để xoay・Chuột phải / phím mũi tên = di chuyển・Cuộn / hai ngón để thu phóng・Nhấn đảo để xem thông tin・Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại (phím R để xoay)</div>
+<div class="hint-m">长按拖到其他位置，编号自动重排・双指拖动＝平移<br>Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại・Hai ngón kéo = di chuyển</div>
 <div class="movebar" id="movebar" hidden><span>移动中 <b id="mv-name"></b><small>Đang di chuyển・thả vào vị trí khác để đổi số</small></span><button id="mv-rot">⟳ 旋转 90°<small>Xoay 90°</small></button><button id="mv-done" class="done">完成<small>Xong</small></button></div>
 <div class="toast" id="toast" hidden></div>
 <div class="modal" id="layout-modal" hidden><div class="box"><h3>导出布局 · Xuất bố cục</h3><p>内容是「位置编号 → 原工作站」的排列顺序。复制发回来就能设成默认；也可以贴上别人给的 JSON 再按「导入」。<br>Đây là thứ tự “số vị trí → trạm gốc”. Sao chép gửi lại để đặt làm mặc định; hoặc dán JSON rồi nhấn “Nhập”.</p><textarea id="layout-json" spellcheck="false"></textarea><div class="row"><button id="lj-import">导入 · Nhập</button><button id="lj-dl">下载 JSON · Tải xuống</button><button id="lj-copy" class="pri">复制 · Sao chép</button><button id="lj-close">关闭 · Đóng</button></div></div></div>
@@ -4302,7 +4309,46 @@ three/build/three.module.js:
       controls.maxPolarAngle = 1.25;
       controls.minDistance = 4;
       controls.maxDistance = 110;
-      controls.autoRotateSpeed = 0.6;
+      controls.autoRotate = false;
+      controls.enablePan = true;
+      controls.screenSpacePanning = true;
+      controls.zoomToCursor = false;
+      controls.enableZoom = true;
+      controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
+      controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+      const _panV = new THREE.Vector3();
+      const _panU = new THREE.Vector3();
+      function panBy(dx, dy) {
+        fly = null;
+        const hgt = renderer.domElement.clientHeight || innerHeight;
+        const k = 2 * camera.position.distanceTo(controls.target) * Math.tan(camera.fov * Math.PI / 360) / hgt;
+        camera.updateMatrix();
+        _panV.setFromMatrixColumn(camera.matrix, 0).multiplyScalar(-dx * k);
+        _panU.setFromMatrixColumn(camera.matrix, 1).multiplyScalar(dy * k);
+        _panV.add(_panU);
+        camera.position.add(_panV);
+        controls.target.add(_panV);
+        controls.update();
+      }
+      stage.addEventListener("wheel", (e) => {
+        if (e.ctrlKey) return;
+        const m = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
+        let dx;
+        if (e.shiftKey) dx = e.deltaX || e.deltaY;
+        else if (Math.abs(e.deltaX) >= 1 && Math.abs(e.deltaX) > Math.abs(e.deltaY)) dx = e.deltaX;
+        else return;
+        e.preventDefault();
+        e.stopPropagation();
+        panBy(-dx * m, 0);
+      }, { capture: true, passive: false });
+      addEventListener("keydown", (e) => {
+        const tg = document.activeElement && document.activeElement.tagName;
+        if (tg === "TEXTAREA" || tg === "INPUT" || e.ctrlKey || e.metaKey || e.altKey) return;
+        const s = e.shiftKey ? 140 : 60, d = { ArrowLeft: [s, 0], ArrowRight: [-s, 0], ArrowUp: [0, s], ArrowDown: [0, -s] }[e.key];
+        if (!d) return;
+        e.preventDefault();
+        panBy(d[0], d[1]);
+      });
       scene.fog = new THREE.Fog(13227746, 40, 90);
       scene.add(new THREE.HemisphereLight(16774890, 6120568, 1.15));
       const sun = new THREE.DirectionalLight(16773080, 2.3);
@@ -5168,12 +5214,7 @@ three/build/three.module.js:
       };
       function spinOff() {
         controls.autoRotate = false;
-        $("#spin").setAttribute("aria-pressed", "false");
       }
-      $("#spin").onclick = () => {
-        controls.autoRotate = !controls.autoRotate;
-        $("#spin").setAttribute("aria-pressed", String(controls.autoRotate));
-      };
       controls.addEventListener("start", () => {
         fly = null;
       });
@@ -5314,6 +5355,43 @@ three/build/three.module.js:
       });
       applyParsed(loadOrder(), true);
       (function() {
+        const pad = $("#panpad");
+        let rep = null, hold = null;
+        const DIR = { l: [1, 0], r: [-1, 0], u: [0, 1], d: [0, -1] };
+        const stop = () => {
+          if (hold || rep) suppressClick = performance.now() + 600;
+          clearTimeout(hold);
+          clearInterval(rep);
+          hold = rep = null;
+        };
+        pad.addEventListener("pointerdown", (e) => {
+          const b = e.target.closest("button");
+          if (!b) return;
+          e.preventDefault();
+          e.stopPropagation();
+          stop();
+          suppressClick = performance.now() + 1500;
+          const d = DIR[b.dataset.p], s = () => renderer.domElement.clientHeight || innerHeight;
+          panBy(d[0] * s() * 0.12, d[1] * s() * 0.12);
+          hold = setTimeout(() => {
+            rep = setInterval(() => panBy(d[0] * s() * 0.025, d[1] * s() * 0.025), 30);
+          }, 320);
+        });
+        ["pointerup", "pointercancel", "pointerleave", "blur"].forEach((t) => (t === "blur" ? window : pad).addEventListener(t, stop));
+        pad.addEventListener("contextmenu", (e) => e.preventDefault());
+        pad.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
+        const pm = $("#panmode");
+        pm.onclick = () => {
+          const on = pm.getAttribute("aria-pressed") !== "true";
+          pm.setAttribute("aria-pressed", String(on));
+          controls.mouseButtons.LEFT = on ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
+          controls.touches.ONE = on ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
+          toast(on ? "平移模式：拖曳＝移动画面" : "旋转模式：拖曳＝旋转", on ? "Chế độ di chuyển: kéo = dời màn hình" : "Chế độ xoay: kéo = xoay");
+        };
+      })();
+      (function() {
         const L = $("#dock-l"), R2 = $("#dock-r"), fs = $("#fs-link");
         try {
           fs.href = location.href.split("#")[0];
@@ -5379,7 +5457,7 @@ three/build/three.module.js:
           g = null;
           if (m) setTimeout(() => dock.classList.remove("grabbing"), 0);
         });
-        const ro = window.ResizeObserver ? new ResizeObserver(upd) : null;
+        const ro = window.ResizeObserver ? new ResizeObserver(() => requestAnimationFrame(upd)) : null;
         if (ro) {
           ro.observe(dock);
           ro.observe(document.body);
