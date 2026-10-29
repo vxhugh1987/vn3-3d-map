@@ -175,7 +175,9 @@ body.card-open .dock-nav,body.fb-mode .dock-nav{display:none!important}
 .panpad button:active{background:var(--accent)}
 .panpad [data-p=u]{grid-column:2;grid-row:1}.panpad [data-p=l]{grid-column:1;grid-row:2}.panpad [data-p=d]{grid-column:2;grid-row:2}.panpad [data-p=r]{grid-column:3;grid-row:2}
 body.fb-mode .panpad{display:none}
-@media (max-width:760px){ .panpad{right:10px;bottom:60px} body.card-open .panpad{display:none} .hint-m{max-width:calc(100vw - 140px)!important} }
+@media (hover:hover) and (pointer:fine){ .panpad,#panmode{display:none!important} } /* 电脑（滑鼠）不显示箭头与平移开关 · máy tính ẩn nút */
+@media (max-width:760px){ .panpad{right:10px;bottom:58px} body.card-open .panpad{display:none} .hint-m{left:10px!important;transform:none!important;text-align:left!important;max-width:calc(100vw - 200px)!important} }
+@media (hover:none),(pointer:coarse){ .panpad{grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:4px} .panpad button{width:56px;height:56px;line-height:56px;font-size:24px;border-radius:14px;background:rgba(28,26,29,.6)} }
 </style>
 <script>
 /* 出錯時顯示訊息（ES5，不限定瀏覽器）· báo lỗi */
@@ -194,10 +196,10 @@ body.fb-mode .panpad{display:none}
 <div class="loading" id="loading">载入 3D 场景中… Đang tải…</div>
 <header class="brand"><div class="logo">VN <span>LINE.</span></div><div class="r"><h1>3D 工作站地图 · Bản đồ trạm 3D</h1><p>Victory・Decathlon 针车线 · Chuyền may</p></div></header>
 <div class="hero-note"><div class="number" id="hero-count">22<small> 站 · trạm</small></div><h2>22 个工作站（1–5 已建档，6–22 待配置）<br><small style="font-size:14px">22 trạm (1–5 đã có dữ liệu, 6–22 chưa cấu hình)</small></h2><p>点一座岛，右边会打开该站的 SOP、机台与现场照片；长按拖到其他位置，编号自动重排。<br>Nhấn vào một đảo để xem SOP, máy và ảnh hiện trường; nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại.</p></div>
-<nav class="toolbar"><a class="fs" id="fs-link" href="https://vxhugh1987.github.io/vn3-3d-map/" target="_blank" rel="noopener" title="在新分页全屏打开 / Mở toàn màn hình ở tab mới">⛶ 全屏 · Toàn màn hình</a><button id="home">全景 · Toàn cảnh</button><button id="panmode" aria-pressed="false" title="开启后单指／左键拖曳＝平移 · Bật: một ngón / chuột trái kéo = di chuyển">✥ 平移 · Di chuyển</button><button id="layout-export" class="lt">导出<span class="lg">布局</span> · Xuất<span class="lg"> bố cục</span></button><button id="layout-reset" class="lt">重置<span class="lg">布局</span> · Đặt lại<span class="lg"> bố cục</span></button></nav>
+<nav class="toolbar"><a class="fs" id="fs-link" href="https://vxhugh1987.github.io/vn3-3d-map/" target="_blank" rel="noopener" title="在新分页全屏打开 / Mở toàn màn hình ở tab mới">⛶ 全屏 · Toàn màn hình</a><button id="home">全景 · Toàn cảnh</button><button id="panmode" aria-pressed="false" title="开启后单指拖曳＝旋转 · Bật: một ngón kéo = xoay">⟳ 旋转 · Xoay</button><button id="layout-export" class="lt">导出<span class="lg">布局</span> · Xuất<span class="lg"> bố cục</span></button><button id="layout-reset" class="lt">重置<span class="lg">布局</span> · Đặt lại<span class="lg"> bố cục</span></button></nav>
 <div class="panpad" id="panpad" aria-label="平移 · Di chuyển"><button data-p="u" aria-label="上 · Lên">↑</button><button data-p="l" aria-label="左 · Trái">←</button><button data-p="d" aria-label="下 · Xuống">↓</button><button data-p="r" aria-label="右 · Phải">→</button></div><nav class="dock" id="dock" aria-label="快速前往工作站 / Đi nhanh đến trạm"></nav><button class="dock-nav" id="dock-l" aria-label="向左 / Sang trái">‹</button><button class="dock-nav" id="dock-r" aria-label="向右 / Sang phải">›</button>
-<div class="hint">拖曳旋转・右键／方向键＝平移・滚轮或双指缩放・点岛屿看资料・长按拖到其他位置，编号自动重排（R 键旋转）<br>Kéo để xoay・Chuột phải / phím mũi tên = di chuyển・Cuộn / hai ngón để thu phóng・Nhấn đảo để xem thông tin・Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại (phím R để xoay)</div>
-<div class="hint-m">长按拖到其他位置，编号自动重排・双指拖动＝平移<br>Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại・Hai ngón kéo = di chuyển</div>
+<div class="hint">左键拖曳＝移动地图・右键拖曳＝旋转・滚轮＝缩放・点岛屿看资料・长按拖到其他位置（R 键旋转）<br>Chuột trái kéo = di chuyển bản đồ・Chuột phải kéo = xoay・Cuộn = thu phóng・Nhấn đảo xem thông tin・Nhấn giữ kéo sang vị trí khác (phím R xoay)</div>
+<div class="hint-m">单指拖曳＝移动地图・双指＝缩放/旋转・点岛屿看资料<br>Một ngón kéo = di chuyển bản đồ・Hai ngón = thu phóng/xoay・Nhấn đảo xem thông tin</div>
 <div class="movebar" id="movebar" hidden><span>移动中 <b id="mv-name"></b><small>Đang di chuyển・thả vào vị trí khác để đổi số</small></span><button id="mv-rot">⟳ 旋转 90°<small>Xoay 90°</small></button><button id="mv-done" class="done">完成<small>Xong</small></button></div>
 <div class="toast" id="toast" hidden></div>
 <div class="modal" id="layout-modal" hidden><div class="box"><h3>导出布局 · Xuất bố cục</h3><p>内容是「位置编号 → 原工作站」的排列顺序。复制发回来就能设成默认；也可以贴上别人给的 JSON 再按「导入」。<br>Đây là thứ tự “số vị trí → trạm gốc”. Sao chép gửi lại để đặt làm mặc định; hoặc dán JSON rồi nhấn “Nhập”.</p><textarea id="layout-json" spellcheck="false"></textarea><div class="row"><button id="lj-import">导入 · Nhập</button><button id="lj-dl">下载 JSON · Tải xuống</button><button id="lj-copy" class="pri">复制 · Sao chép</button><button id="lj-close">关闭 · Đóng</button></div></div></div>
@@ -4311,11 +4313,47 @@ three/build/three.module.js:
       controls.maxDistance = 110;
       controls.autoRotate = false;
       controls.enablePan = true;
-      controls.screenSpacePanning = true;
-      controls.zoomToCursor = false;
+      controls.screenSpacePanning = false;
+      controls.zoomToCursor = true;
       controls.enableZoom = true;
-      controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
-      controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+      controls.enableRotate = true;
+      controls.mouseButtons = { LEFT: THREE.MOUSE.PAN, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.ROTATE };
+      controls.touches = { ONE: THREE.TOUCH.PAN, TWO: THREE.TOUCH.DOLLY_PAN };
+      {
+        const tp = /* @__PURE__ */ new Map();
+        let ang = null;
+        const _off = new THREE.Vector3(), _Y = new THREE.Vector3(0, 1, 0);
+        const angOf = () => {
+          const p = Array.from(tp.values());
+          return Math.atan2(p[1].y - p[0].y, p[1].x - p[0].x);
+        };
+        stage.addEventListener("pointerdown", (e) => {
+          if (e.pointerType !== "touch") return;
+          tp.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          ang = tp.size === 2 ? angOf() : null;
+        }, true);
+        stage.addEventListener("pointermove", (e) => {
+          if (e.pointerType !== "touch" || !tp.has(e.pointerId)) return;
+          tp.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (tp.size !== 2 || ang === null || !controls.enabled) return;
+          const a = angOf();
+          let d = a - ang;
+          d = Math.atan2(Math.sin(d), Math.cos(d));
+          ang = a;
+          if (Math.abs(d) < 1e-4) return;
+          fly = null;
+          _off.copy(camera.position).sub(controls.target).applyAxisAngle(_Y, d);
+          camera.position.copy(controls.target).add(_off);
+          controls.update();
+        }, true);
+        const up = (e) => {
+          if (e.pointerType !== "touch") return;
+          tp.delete(e.pointerId);
+          ang = tp.size === 2 ? angOf() : null;
+        };
+        stage.addEventListener("pointerup", up, true);
+        stage.addEventListener("pointercancel", up, true);
+      }
       const _panV = new THREE.Vector3();
       const _panU = new THREE.Vector3();
       function panBy(dx, dy) {
@@ -4323,32 +4361,17 @@ three/build/three.module.js:
         const hgt = renderer.domElement.clientHeight || innerHeight;
         const k = 2 * camera.position.distanceTo(controls.target) * Math.tan(camera.fov * Math.PI / 360) / hgt;
         camera.updateMatrix();
-        _panV.setFromMatrixColumn(camera.matrix, 0).multiplyScalar(-dx * k);
-        _panU.setFromMatrixColumn(camera.matrix, 1).multiplyScalar(dy * k);
+        _panV.setFromMatrixColumn(camera.matrix, 0);
+        _panV.y = 0;
+        _panV.normalize();
+        _panU.crossVectors(camera.up, _panV);
+        _panV.multiplyScalar(-dx * k);
+        _panU.multiplyScalar(dy * k);
         _panV.add(_panU);
         camera.position.add(_panV);
         controls.target.add(_panV);
         controls.update();
       }
-      stage.addEventListener("wheel", (e) => {
-        if (e.ctrlKey) return;
-        const m = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
-        let dx;
-        if (e.shiftKey) dx = e.deltaX || e.deltaY;
-        else if (Math.abs(e.deltaX) >= 1 && Math.abs(e.deltaX) > Math.abs(e.deltaY)) dx = e.deltaX;
-        else return;
-        e.preventDefault();
-        e.stopPropagation();
-        panBy(-dx * m, 0);
-      }, { capture: true, passive: false });
-      addEventListener("keydown", (e) => {
-        const tg = document.activeElement && document.activeElement.tagName;
-        if (tg === "TEXTAREA" || tg === "INPUT" || e.ctrlKey || e.metaKey || e.altKey) return;
-        const s = e.shiftKey ? 140 : 60, d = { ArrowLeft: [s, 0], ArrowRight: [-s, 0], ArrowUp: [0, s], ArrowDown: [0, -s] }[e.key];
-        if (!d) return;
-        e.preventDefault();
-        panBy(d[0], d[1]);
-      });
       scene.fog = new THREE.Fog(13227746, 40, 90);
       scene.add(new THREE.HemisphereLight(16774890, 6120568, 1.15));
       const sun = new THREE.DirectionalLight(16773080, 2.3);
@@ -5070,14 +5093,30 @@ three/build/three.module.js:
       renderer.domElement.addEventListener("pointermove", (e) => {
         if (e.pointerType === "mouse" && !drag) setHover(pick(e));
       });
+      let downN = 0;
       renderer.domElement.addEventListener("pointerdown", (e) => {
-        down = { x: e.clientX, y: e.clientY, t: performance.now() };
+        if (e.isPrimary) downN = 0;
+        downN++;
+        if (downN > 1) {
+          if (down) down.multi = true;
+          return;
+        }
+        down = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() };
+      });
+      renderer.domElement.addEventListener("pointercancel", () => {
+        downN = 0;
+        down = null;
       });
       renderer.domElement.addEventListener("pointerup", (e) => {
+        downN = Math.max(0, downN - 1);
         if (!down) return;
-        const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), long = down.long;
+        if (down.id !== void 0 && e.pointerId !== down.id) {
+          down.multi = true;
+          return;
+        }
+        const moved = Math.hypot(e.clientX - down.x, e.clientY - down.y), long = down.long, multi = down.multi;
         down = null;
-        if (moved > 6 || long) return;
+        if (moved > 6 || long || multi) return;
         const isl = pick(e);
         if (moving && isl !== moving) setMoving(null);
         if (isl) select(isl);
@@ -5386,9 +5425,8 @@ three/build/three.module.js:
         pm.onclick = () => {
           const on = pm.getAttribute("aria-pressed") !== "true";
           pm.setAttribute("aria-pressed", String(on));
-          controls.mouseButtons.LEFT = on ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE;
-          controls.touches.ONE = on ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
-          toast(on ? "平移模式：拖曳＝移动画面" : "旋转模式：拖曳＝旋转", on ? "Chế độ di chuyển: kéo = dời màn hình" : "Chế độ xoay: kéo = xoay");
+          controls.touches.ONE = on ? THREE.TOUCH.ROTATE : THREE.TOUCH.PAN;
+          toast(on ? "单指拖曳＝旋转" : "单指拖曳＝移动地图", on ? "Một ngón kéo = xoay" : "Một ngón kéo = di chuyển bản đồ");
         };
       })();
       (function() {
