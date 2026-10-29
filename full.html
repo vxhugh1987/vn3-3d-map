@@ -10,7 +10,7 @@
 <style>
 :root{--paper:#f6f2ea;--paper2:#ebe4d8;--ink:#1c1a1d;--muted:#6d6763;--line:#dcd3c6;--accent:#1f5fa8;--accent2:#e2a51b;--side:0px;--card-w:420px;--serif:"Noto Serif TC","Songti TC",serif;--shadow:0 10px 30px rgba(10,15,30,.2),0 2px 6px rgba(10,15,30,.12)}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none}
+html,body{margin:0;width:100%;max-width:100%;height:100%;overflow:hidden;overflow-x:hidden;overscroll-behavior:none;position:relative}
 body{font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;color:var(--ink);background:linear-gradient(180deg,#93aecb 0%,#c9d6e2 45%,#efe6d8 100%);-webkit-font-smoothing:antialiased}
 body.card-open{--side:var(--card-w)}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -129,6 +129,46 @@ body.dragging,body.dragging *{cursor:grabbing!important}
  .toolbar{display:grid;grid-template-columns:auto auto;gap:5px}.toolbar button{height:30px;padding:0 9px;font-size:11px}.toolbar .lg{display:none}
  .hero-note{top:56px}.hero-note h2{font-size:13px;max-width:52vw}.hero-note h2 small{font-size:11px!important}
 }
+
+/* 自适应 / iframe 嵌入（Google Site）· thích ứng khi nhúng */
+#stage canvas{max-width:100%}
+.toolbar a.fs{display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 13px;border-radius:999px;background:var(--accent);color:#fff;box-shadow:var(--shadow);font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap}
+.toolbar a.fs:hover{filter:brightness(1.1)}
+.dock{scrollbar-width:thin;scrollbar-color:rgba(28,26,29,.35) transparent;overscroll-behavior-x:contain}
+.dock::-webkit-scrollbar{height:5px}.dock::-webkit-scrollbar-thumb{background:rgba(28,26,29,.35);border-radius:3px}
+.dock.grabbing{cursor:grabbing}.dock.grabbing button{pointer-events:none}
+.dock-nav{display:none;position:fixed;bottom:12px;z-index:5;width:30px;height:34px;border:0;border-radius:999px;background:rgba(28,26,29,.82);color:#fff;font-size:18px;font-weight:900;line-height:34px;padding:0;box-shadow:var(--shadow)}
+.dock-nav[disabled]{opacity:.3;cursor:default}
+#dock-l{left:8px}#dock-r{right:8px}
+body.dock-scroll .dock-nav{display:block}
+body.dock-scroll .dock{left:44px!important;right:44px!important;flex-wrap:nowrap!important;overflow-x:auto!important;justify-content:flex-start!important;transform:none!important;max-width:none!important}
+.dock button{flex-shrink:0}
+body.card-open .dock-nav,body.fb-mode .dock-nav{display:none!important}
+@media (max-width:1100px) and (min-width:761px){
+ .dock{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;left:12px;right:12px;transform:none;max-width:none}
+ .dock button .nm{display:none}
+ .hero-note{max-width:44vw}.hero-note .number{font-size:52px}.hero-note h2{font-size:17px}
+}
+@media (max-width:760px){
+ .toolbar{grid-template-columns:auto auto}.toolbar a.fs{grid-column:1/-1;justify-self:end;height:28px;padding:0 10px;font-size:11px}
+ .dock{scrollbar-width:none}.dock::-webkit-scrollbar{display:none}
+}
+@media (max-width:480px){
+ .toolbar button{font-size:10.5px;padding:0 8px}
+ .brand .logo{font-size:18px}
+ .hero-note .number{font-size:36px}.hero-note .number small{font-size:16px}
+ .hero-note h2{font-size:12px;max-width:60vw}
+ .hint-m{font-size:10px;max-width:calc(100vw - 24px);white-space:normal}
+}
+@media (max-height:560px){
+ .hero-note{top:50px}.hero-note .number{font-size:36px}.hero-note .number small{font-size:15px}
+ .hero-note h2{font-size:12px;max-width:40vw}.hero-note h2 small{display:none}.hero-note p{display:none}
+ .hint{display:none}
+ .hint-m{bottom:52px;font-size:10px;padding:3px 10px}
+ .toolbar{top:10px}.toolbar button{height:28px}
+ .brand{top:10px}
+}
+@media (max-height:400px){ .hero-note,.hint-m{display:none!important} }
 </style>
 </head>
 <body>
@@ -136,8 +176,8 @@ body.dragging,body.dragging *{cursor:grabbing!important}
 <div class="loading" id="loading">载入 3D 场景中… Đang tải…</div>
 <header class="brand"><div class="logo">VN <span>LINE.</span></div><div class="r"><h1>3D 工作站地图 · Bản đồ trạm 3D</h1><p>Victory・Decathlon 针车线 · Chuyền may</p></div></header>
 <div class="hero-note"><div class="number" id="hero-count">22<small> 站 · trạm</small></div><h2>22 个工作站（1–5 已建档，6–22 待配置）<br><small style="font-size:14px">22 trạm (1–5 đã có dữ liệu, 6–22 chưa cấu hình)</small></h2><p>点一座岛，右边会打开该站的 SOP、机台与现场照片；长按拖到其他位置，编号自动重排。<br>Nhấn vào một đảo để xem SOP, máy và ảnh hiện trường; nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại.</p></div>
-<nav class="toolbar"><button id="home">全景 · Toàn cảnh</button><button id="spin" aria-pressed="false">自动旋转 · Tự xoay</button><button id="layout-export" class="lt">导出<span class="lg">布局</span> · Xuất<span class="lg"> bố cục</span></button><button id="layout-reset" class="lt">重置<span class="lg">布局</span> · Đặt lại<span class="lg"> bố cục</span></button></nav>
-<nav class="dock" id="dock" aria-label="快速前往工作站 / Đi nhanh đến trạm"></nav>
+<nav class="toolbar"><a class="fs" id="fs-link" href="https://vxhugh1987.github.io/vn3-3d-map/" target="_blank" rel="noopener" title="在新分页全屏打开 / Mở toàn màn hình ở tab mới">⛶ 全屏 · Toàn màn hình</a><button id="home">全景 · Toàn cảnh</button><button id="spin" aria-pressed="false">自动旋转 · Tự xoay</button><button id="layout-export" class="lt">导出<span class="lg">布局</span> · Xuất<span class="lg"> bố cục</span></button><button id="layout-reset" class="lt">重置<span class="lg">布局</span> · Đặt lại<span class="lg"> bố cục</span></button></nav>
+<nav class="dock" id="dock" aria-label="快速前往工作站 / Đi nhanh đến trạm"></nav><button class="dock-nav" id="dock-l" aria-label="向左 / Sang trái">‹</button><button class="dock-nav" id="dock-r" aria-label="向右 / Sang phải">›</button>
 <div class="hint">拖曳旋转・滚轮或双指缩放・点岛屿看资料・长按拖到其他位置，编号自动重排（R 键旋转）<br>Kéo để xoay・Cuộn / hai ngón để thu phóng・Nhấn đảo để xem thông tin・Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại (phím R để xoay)</div>
 <div class="hint-m">长按拖到其他位置，编号自动重排<br>Nhấn giữ kéo sang vị trí khác, số trạm tự động sắp xếp lại</div>
 <div class="movebar" id="movebar" hidden><span>移动中 <b id="mv-name"></b><small>Đang di chuyển・thả vào vị trí khác để đổi số</small></span><button id="mv-rot">⟳ 旋转 90°<small>Xoay 90°</small></button><button id="mv-done" class="done">完成<small>Xong</small></button></div>
@@ -1110,6 +1150,34 @@ addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("#lightbox
 
 applyParsed(loadOrder(), true); // 读入已存的排列 · đọc thứ tự đã lưu
 
+
+/* 自适应：底部清单可左右滚动（滚轮、拖曳、箭头）· danh sách dưới cuộn ngang được */
+(function () {
+  const L = $("#dock-l"), R = $("#dock-r"), fs = $("#fs-link");
+  // 全屏连结：开同一页（新分页）· mở chính trang này ở tab mới
+  try { fs.href = location.href.split("#")[0]; } catch (e) {}
+  let inFrame = true; try { inFrame = window.self !== window.top; } catch (e) {}
+  if (!inFrame) fs.onclick = (e) => { const d = document.documentElement; if (d.requestFullscreen) { e.preventDefault(); if (document.fullscreenElement) document.exitFullscreen(); else d.requestFullscreen().catch(() => window.open(fs.href, "_blank")); } };
+  function upd() {
+    document.body.classList.remove("dock-scroll");
+    const over = dock.scrollWidth > dock.clientWidth + 2 || dock.getBoundingClientRect().height > Math.min(130, innerHeight * 0.22);
+    document.body.classList.toggle("dock-scroll", over);
+    L.disabled = dock.scrollLeft <= 2; R.disabled = dock.scrollLeft + dock.clientWidth >= dock.scrollWidth - 2;
+  }
+  const step = () => Math.max(120, dock.clientWidth * 0.7);
+  L.onclick = () => dock.scrollBy({ left: -step(), behavior: "smooth" });
+  R.onclick = () => dock.scrollBy({ left: step(), behavior: "smooth" });
+  dock.addEventListener("scroll", () => { L.disabled = dock.scrollLeft <= 2; R.disabled = dock.scrollLeft + dock.clientWidth >= dock.scrollWidth - 2; }, { passive: true });
+  dock.addEventListener("wheel", (e) => { if (dock.scrollWidth <= dock.clientWidth) return; const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; dock.scrollLeft += d; e.preventDefault(); }, { passive: false });
+  let g = null;
+  dock.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse" || e.button !== 0) return; g = { x: e.clientX, s: dock.scrollLeft, moved: false }; });
+  addEventListener("pointermove", (e) => { if (!g) return; const dx = e.clientX - g.x; if (!g.moved && Math.abs(dx) > 6) { g.moved = true; dock.classList.add("grabbing"); } if (g.moved) dock.scrollLeft = g.s - dx; });
+  addEventListener("pointerup", () => { if (!g) return; const m = g.moved; g = null; if (m) setTimeout(() => dock.classList.remove("grabbing"), 0); });
+  const ro = window.ResizeObserver ? new ResizeObserver(upd) : null; if (ro) { ro.observe(dock); ro.observe(document.body); }
+  addEventListener("resize", upd); new MutationObserver(upd).observe(dock, { childList: true });
+  setTimeout(upd, 0); setTimeout(upd, 800);
+})();
+
 /* 尺寸与动画 */
 function resize() {
   const w = stage.clientWidth, h = stage.clientHeight;
@@ -1118,6 +1186,7 @@ function resize() {
   camera.updateProjectionMatrix();
 }
 new ResizeObserver(resize).observe(stage); resize();
+addEventListener("resize", resize); addEventListener("orientationchange", () => setTimeout(resize, 300));
 HOME.target.set(CX + 1, -1, -4.5); HOME.pos.set(CX - 3, 44, 54); scene.fog.near = 60; scene.fog.far = 140;
 if (innerWidth <= 760) { HOME.target.set(CX + 4, -1, 0); HOME.pos.set(xMaxAll + 36, 58, 48); controls.maxDistance = 160; scene.fog.near = 95; scene.fog.far = 210; }
 camera.position.copy(HOME.pos); controls.target.copy(HOME.target);
