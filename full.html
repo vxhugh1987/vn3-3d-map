@@ -175,10 +175,36 @@ body.card-open .dock-nav,body.fb-mode .dock-nav{display:none!important}
 .panpad button:active{background:var(--accent)}
 .panpad [data-p=u]{grid-column:2;grid-row:1}.panpad [data-p=l]{grid-column:1;grid-row:2}.panpad [data-p=d]{grid-column:2;grid-row:2}.panpad [data-p=r]{grid-column:3;grid-row:2}
 body.fb-mode .panpad{display:none}
-@media (hover:hover) and (pointer:fine){ .panpad,#panmode{display:none!important} } /* 电脑（滑鼠）不显示箭头与平移开关 · máy tính ẩn nút */
+html:not(.touch-ui) .panpad,html:not(.touch-ui) #panmode{display:none!important} /* 只有手机/平板显示箭头与旋转开关，电脑（含触控笔电）不显示 · chỉ điện thoại/máy tính bảng mới hiện nút */
+.hint,.hint-m{display:none!important} /* 不显示操作提示文字 · ẩn chữ hướng dẫn */
+html,body{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+img{-webkit-touch-callout:none;-webkit-user-drag:none}
+input,textarea,select,[contenteditable=""],[contenteditable=true]{-webkit-touch-callout:default;-webkit-user-select:text;user-select:text}
 @media (max-width:760px){ .panpad{right:10px;bottom:58px} body.card-open .panpad{display:none} .hint-m{left:10px!important;transform:none!important;text-align:left!important;max-width:calc(100vw - 200px)!important} }
-@media (hover:none),(pointer:coarse){ .panpad{grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:4px} .panpad button{width:56px;height:56px;line-height:56px;font-size:24px;border-radius:14px;background:rgba(28,26,29,.6)} }
+html.touch-ui .panpad{grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:4px} html.touch-ui .panpad button{width:56px;height:56px;line-height:56px;font-size:24px;border-radius:14px;background:rgba(28,26,29,.6)}
 </style>
+<script>
+/* 锁住右键选单与长按选单；判断是否为手机/平板（只有手机/平板显示触控按钮）· khóa menu chuột phải; chỉ điện thoại hiện nút cảm ứng */
+(function(){
+  var d=document, de=d.documentElement, nav=navigator, ua=nav.userAgent||"";
+  function mm(q){ try{ return !!(window.matchMedia && matchMedia(q).matches); }catch(e){ return false; } }
+  var mobUA=/Android|iPhone|iPad|iPod|Mobile|Silk|Kindle|HarmonyOS|MicroMessenger/i.test(ua) || (nav.platform==="MacIntel" && nav.maxTouchPoints>1);
+  try{ if(nav.userAgentData && nav.userAgentData.mobile) mobUA=true; }catch(e){}
+  if(/Windows NT|CrOS|X11; Linux x86_64/i.test(ua) && !/Mobile/i.test(ua)) mobUA=false;
+  var coarse=mm("(pointer: coarse)"), fine=mm("(any-pointer: fine)") || mm("(any-hover: hover)");
+  var touchUI=mobUA && coarse && !fine;
+  if(touchUI) de.className+=(de.className?" ":"")+"touch-ui";
+  window.__touchUI=touchUI;
+  function editable(t){ return !!(t && t.closest && t.closest('input,textarea,select,[contenteditable=""],[contenteditable="true"]')); }
+  var stop=function(e){ if(!editable(e.target)) e.preventDefault(); };
+  d.addEventListener("contextmenu", stop, true); window.addEventListener("contextmenu", stop, true);
+  d.addEventListener("selectstart", stop, true); d.addEventListener("dragstart", stop, true);
+  window.addEventListener("keydown", function(e){
+    var k=(e.key||"").toUpperCase(), c=e.ctrlKey||e.metaKey;
+    if(k==="F12" || e.keyCode===123 || (c && (e.shiftKey||e.altKey) && (k==="I"||k==="J"||k==="C")) || (c && !e.shiftKey && k==="U")){ e.preventDefault(); e.stopPropagation(); }
+  }, true);
+})();
+</script>
 <script>
 /* 出錯時顯示訊息（ES5，不限定瀏覽器）· báo lỗi */
 (function(){
